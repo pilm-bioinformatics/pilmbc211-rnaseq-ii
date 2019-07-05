@@ -4,15 +4,122 @@ author: "Lorena Pantano"
 date: "`r Sys.Date()`"
 output:
     html_document:
-        code_folding: hide
         df_print: paged
-        highlight: pygments
+        highlight: tango
         number_sections: false
         self_contained: true
-        theme: paper
+        theme: readable
         toc: true
         toc_float:
             collapsed: true
             smooth_scroll: false
 ---
 
+Load the main library to manipulate tables.
+
+```{r}
+library(tidyverse)
+```
+
+# Set up files
+
+```{r, eval=FALSE}
+# download.file("https://github.com/pilm-bioinformatics/pilmbc211-rnaseq-ii/raw/master/salmon.tar.gz", "salmon.tar.gz")
+system("tar -xvf salmon.tar.gz")
+```
+
+# Load files
+
+Normally we need two types of files:
+
+* metadata: information for each sample
+* expression: abundance for each gene
+
+We will use an extra file that will help to have more information for each gene:
+
+* row data: table with gene id and gene name
+
+## Samples metadata
+
+```{r}
+metadata = read.csv("salmon/metadata.csv", row.names = 1)
+metadata
+```
+
+## Gene abundance
+
+Typically, there are two type of pipelines:
+
+* Quantification from BAM files with genomic coordinates: [`featureCounts`](http://subread.sourceforge.net/)
+* Quantification from FASTQ files and transcriptome FASTA: [`salmon`](https://combine-lab.github.io/salmon/)
+
+We end up with a table named `counts` that contains the gene abundances.
+
+### FeatureCounts pipeline
+
+Usually you have one file, where columns are samples and rows are genes.
+
+```{r}
+counts = read.csv("salmon/merged_salmon_gene_reads.csv", row.names = 1) %>% 
+    as.matrix() %>% 
+    round()
+head(counts)
+```
+
+
+### Salmon pipeline
+
+There is a folder for each sample with information of the quantification at transcript level. We need to load all the samples and trasnform to gene quantification. LINK
+
+```{r}
+library(tximport)
+tx2gene = read.csv("salmon/tx2gene.csv", col.names = c("tx", "gene_id", "gene_name"))
+# files = list.files("salmon", pattern = "quant.sf",
+#                    recursive = T, full.names = T)
+# names(files) = basename(dirname(files))
+files = as.character(metadata$files)
+names(files) = rownames(metadata)
+txi = tximport(files, type = "salmon", tx2gene = tx2gene)
+counts = txi$abundance
+head(counts)
+```
+
+## Prepare gene data
+
+Create a table that has `gene_id` and `gene_name` and it is in the same order than the `counts` table.
+
+```{r}
+rows = data.frame(tx2gene[,2:3]) %>% 
+    distinct()
+rownames(rows) = rows$gene_id
+rows = rows[rownames(counts),]
+head(rows)
+```
+
+# Create Summarized Object
+
+Full documentation is at [Bioc](https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html).
+
+![](imgs/se.svg)
+
+## SummarizedExperiment
+
+## Load into object
+
+```{r}
+library(SummarizedExperiment)
+gse = SummarizedExperiment(assays = list(counts = counts),
+                          colData = metadata,
+                          rowData = rows)
+dir.create("data", showWarnings = FALSE)
+write_rds(gse, "data/gse.rds")
+gse
+```
+
+`RDS` files are R data files with the object that can be loaded in other R session.
+
+[Next lesson](https://pilm-bioinformatics.github.io/pilmbc211-rnaseq-ii/differential_expression_analysis.html)
+
+*** 
+
+*These materials have been developed by members of the teaching team at the [PILM - MIT Bioinformatics Core (PILMBC)](https://pilm-bioinformatics.github.io/knowledgebase). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*
