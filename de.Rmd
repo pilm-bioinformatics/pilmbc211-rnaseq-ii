@@ -4,12 +4,11 @@ author: "Lorena Pantano"
 date: "`r Sys.Date()`"
 output:
     html_document:
-        code_folding: hide
         df_print: paged
-        highlight: pygments
+        highlight: tango
         number_sections: false
         self_contained: true
-        theme: paper
+        theme: readable
         toc: true
         toc_float:
             collapsed: true
@@ -20,14 +19,14 @@ output:
 
 ```{r}
 params=list(
-    se_file= "data/se.rds",
-    design= "~ type + condition",
-    contrast= "condition.treated_vs_untreated",
-    metadata= c("condition", "type"), # first one used in some plots
+    se_file= "data/gse.rds",
+    design= "~ group",
+    contrast= "group.E_vs_D",
+    metadata= c("group"), # first one used in some plots
     alpha= 0.05,
     lfc= 0,
     slot= "vst",
-    output_dir= ".",
+    output_dir= "docs/results",
     cache_dir= "cache",
     cache_on= FALSE)
 ```
@@ -423,3 +422,9 @@ print(params)
 [7-Zip]: http://www.7-zip.org
 [PCA]: https://en.wikipedia.org/wiki/Principal_component_analysis
 [degPatterns]: https://lpantano.github.io/DEGreport/reference/degPatterns.html
+
+[Next lesson](https://pilm-bioinformatics.github.io/pilmbc211-rnaseq-ii/run_render.html)
+
+*** 
+
+*These materials have been developed by members of the teaching team at the [PILM - MIT Bioinformatics Core (PILMBC)](https://pilm-bioinformatics.github.io/knowledgebase). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*

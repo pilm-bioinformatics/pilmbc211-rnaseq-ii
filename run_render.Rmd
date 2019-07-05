@@ -1,0 +1,78 @@
+---
+title: "Automatize Differential Expression for multiple contrasts"
+author: "Lorena Pantano"
+date: "`r Sys.Date()`"
+output:
+    html_document:
+        df_print: paged
+        highlight: tango
+        number_sections: false
+        self_contained: true
+        theme: readable
+        toc: true
+        toc_float:
+            collapsed: true
+            smooth_scroll: false
+---
+
+# Parameters in header
+
+If you look at the `de_template.Rmd`, there is a section with options that will change what file and options to use to run the DE analysis:
+
+```
+params:
+    se_file: "data/se.rds"
+    design: "~ type + condition"
+    contrast: "condition.treated_vs_untreated,type.paired-end_vs_single-read"
+    metadata: !r c("condition", "type") # first one used in some plots
+    alpha: 0.05
+    lfc: 0
+    slot: "vst"
+    output_dir: "."
+    cache_dir: "../cache"
+    cache_on: FALSE
+
+```
+
+```{r}
+dir.create("test", showWarnings = FALSE)
+```
+
+These are the ones by default that works with a test data, if we try to run this with these options, it will fail:
+
+```{r, eval=FALSE}
+rmarkdown::render("de_template.Rmd", output_file = "test/de.html")
+```
+
+
+To have it working with our data, we need to change the options to match our data:
+
+```{r}
+rmarkdown::render("de_template.Rmd",
+                  output_file = "test/de.html",
+                  quiet = TRUE,
+                  params = list(
+                      se_file = "data/gse.rds",
+                      design = "~ group",
+                      contrast = "group.E_vs_D",
+                      metadata = c("group"),
+                      output_dir = "test"
+                      
+                  )
+)
+```
+
+
+Look at `test/de.html`.
+
+
+# Source
+
+This template is available at [PILM public GitHub](https://github.com/pilm-bioinformatics/templates-rmd-de). You can download from there the `Rmd` file. 
+
+[Go to homepage](https://pilm-bioinformatics.github.io/pilmbc211-rnaseq-ii/index.html)
+
+*** 
+
+*These materials have been developed by members of the teaching team at the [PILM - MIT Bioinformatics Core (PILMBC)](https://pilm-bioinformatics.github.io/knowledgebase). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*
+
