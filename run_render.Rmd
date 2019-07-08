@@ -34,6 +34,8 @@ params:
 
 ```
 
+Let's test this code. For that, we create a `test` folder.
+
 ```{r}
 dir.create("test", showWarnings = FALSE)
 ```

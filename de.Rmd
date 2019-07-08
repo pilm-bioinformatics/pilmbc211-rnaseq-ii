@@ -17,6 +17,8 @@ output:
 
 # set up
 
+Let's define some parameters so it can be adapted to different analysis.
+
 ```{r}
 params=list(
     se_file= "data/gse.rds",
@@ -107,12 +109,10 @@ theme_update(
 
 ```{r setup, message=FALSE}
 library(DESeq2)
-library(ggplot2)
 library(DEGreport)
 library(pheatmap)
 library(tidyverse)
 library(readr)
-# Load bcbioRNASeq object
 
 lfc = params$lfc
 alpha = params$alpha
@@ -157,7 +157,7 @@ as.data.frame(assay(rld)) %>%
 
 # Quality metrics
 
-Full qualialyt metrics can be found at [multiqc_report.html].
+Full quality metrics can be found at [multiqc_report.html].
 
 ## Number of genes
 
@@ -186,6 +186,8 @@ degPCA(assays(se)[[params$slot]], colData(se), condition = params$metadata[1])
 
 
 # Results
+
+We calculate the different contrasts (comparisons) in a single step with the [degComps](http://lpantano.github.io/DEGreport/reference/degComps.html) function, and all results are stored in a single variable.
 
 ```{r res, eval=!file.exists(file.path(dataDir, "comparisons.rda"))}
 # ?degComps: Read how to get the different contrasts
