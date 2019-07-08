@@ -60,7 +60,7 @@ We end up with a table named `counts` that contains the gene abundances.
 Usually you have one file, where columns are samples and rows are genes.
 
 ```{r}
-counts = read.csv("salmon/merged_salmon_gene_reads.csv", row.names = 1) %>% 
+counts = read.csv("salmon/merged_gene_reads.csv", row.names = 1) %>% 
     as.matrix() %>% 
     round()
 head(counts)

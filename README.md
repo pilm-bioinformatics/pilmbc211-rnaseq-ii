@@ -31,7 +31,7 @@ This workshop will show the most common functions used during differential expre
 |[Automatize reports](https://pilm-bioinformatics.github.io/pilmbc211-rnaseq-ii/run_render.html) | 30 min |
 ### Dataset
 
-All the files used for the above lessons are linked within, but can also be [accessed here](https://github.com/pilm-bioinformatics/pilmbc211-rnaseq-ii).
+All the files used for the above lessons are linked within, but can also be [accessed here](https://github.com/pilm-bioinformatics/pilmbc211-rnaseq-ii). [Download](https://github.com/pilm-bioinformatics/pilmbc211-rnaseq-ii/archive/master.zip) the full project to start.
 
 ### Installation Requirements
 
